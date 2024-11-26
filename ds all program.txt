@@ -1,0 +1,759 @@
+ Evaluate a postfix expression using stacks**************************
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define SIZE 100
+
+int stack[SIZE], top = -1;
+
+void push(int value) {
+    stack[++top] = value;
+}
+
+int pop() {
+    return stack[top--];
+}
+
+int evaluatePostfix(char* exp) {
+    for (int i = 0; exp[i] != '\0'; i++) {
+        if (isdigit(exp[i])) {
+            push(exp[i] - '0');
+        } else {
+            int val2 = pop();
+            int val1 = pop();
+            switch (exp[i]) {
+                case '+': push(val1 + val2); break;
+                case '-': push(val1 - val2); break;
+                case '*': push(val1 * val2); break;
+                case '/': push(val1 / val2); break;
+            }
+        }
+    }
+    return pop();
+}
+
+int main() {
+    char exp[] = "231*+9-";
+    printf("Postfix Evaluation Result: %d\n", evaluatePostfix(exp));
+    return 0;
+}
+
+
+
+
+
+
+
+Convert infix to postfix using stacks*******************
+
+#include <stdio.h>
+#include <ctype.h>
+
+#define SIZE 100
+
+char stack[SIZE];
+int top = -1;
+
+void push(char c) {
+    stack[++top] = c;
+}
+
+char pop() {
+    return stack[top--];
+}
+
+int precedence(char c) {
+    if (c == '+' || c == '-') return 1;
+    if (c == '*' || c == '/') return 2;
+    return 0;
+}
+
+void infixToPostfix(char* infix, char* postfix) {
+    int j = 0;
+    for (int i = 0; infix[i] != '\0'; i++) {
+        if (isalnum(infix[i])) {
+            postfix[j++] = infix[i];
+        } else if (infix[i] == '(') {
+            push(infix[i]);
+        } else if (infix[i] == ')') {
+            while (stack[top] != '(') {
+                postfix[j++] = pop();
+            }
+            pop(); // Remove '('
+        } else {
+            while (top != -1 && precedence(stack[top]) >= precedence(infix[i])) {
+                postfix[j++] = pop();
+            }
+            push(infix[i]);
+        }
+    }
+    while (top != -1) {
+        postfix[j++] = pop();
+    }
+    postfix[j] = '\0';
+}
+
+int main() {
+    char infix[] = "a+b*c";
+    char postfix[SIZE];
+    infixToPostfix(infix, postfix);
+    printf("Postfix Expression: %s\n", postfix);
+    return 0;
+}
+
+
+
+Implement a double-ended queue (deque) using arrays***********************
+
+ 
+#include <stdio.h>
+#define SIZE 10
+
+int deque[SIZE], front = -1, rear = -1;
+
+void insertFront(int value) {
+    if ((front == 0 && rear == SIZE - 1) || (front == rear + 1)) {
+        printf("Deque Overflow\n");
+        return;
+    }
+    if (front == -1) {
+        front = rear = 0;
+    } else if (front == 0) {
+        front = SIZE - 1;
+    } else {
+        front--;
+    }
+    deque[front] = value;
+}
+
+void insertRear(int value) {
+    if ((front == 0 && rear == SIZE - 1) || (front == rear + 1)) {
+        printf("Deque Overflow\n");
+        return;
+    }
+    if (front == -1) {
+        front = rear = 0;
+    } else if (rear == SIZE - 1) {
+        rear = 0;
+    } else {
+        rear++;
+    }
+    deque[rear] = value;
+}
+
+int deleteFront() {
+    if (front == -1) {
+        printf("Deque Underflow\n");
+        return -1;
+    }
+    int value = deque[front];
+    if (front == rear) {
+        front = rear = -1;
+    } else if (front == SIZE - 1) {
+        front = 0;
+    } else {
+        front++;
+    }
+    return value;
+}
+
+int deleteRear() {
+    if (front == -1) {
+        printf("Deque Underflow\n");
+        return -1;
+    }
+    int value = deque[rear];
+    if (front == rear) {
+        front = rear = -1;
+    } else if (rear == 0) {
+        rear = SIZE - 1;
+    } else {
+        rear--;
+    }
+    return value;
+}
+
+void display() {
+    if (front == -1) {
+        printf("Deque is empty\n");
+        return;
+    }
+    printf("Deque elements: ");
+    if (front <= rear) {
+        for (int i = front; i <= rear; i++)
+            printf("%d ", deque[i]);
+    } else {
+        for (int i = front; i < SIZE; i++)
+            printf("%d ", deque[i]);
+        for (int i = 0; i <= rear; i++)
+            printf("%d ", deque[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    insertRear(5);
+    insertRear(10);
+    insertFront(15);
+    display();
+    printf("Deleted from front: %d\n", deleteFront());
+    display();
+    printf("Deleted from rear: %d\n", deleteRear());
+    display();
+    return 0;
+}
+
+
+Implement a stack using two queues************************
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+int queue1[SIZE], queue2[SIZE];
+int front1 = -1, rear1 = -1, front2 = -1, rear2 = -1;
+
+// Queue operations
+void enqueue1(int value) {
+    queue1[++rear1] = value;
+    if (front1 == -1) front1 = 0;
+}
+
+int dequeue1() {
+    return queue1[front1++];
+}
+
+void enqueue2(int value) {
+    queue2[++rear2] = value;
+    if (front2 == -1) front2 = 0;
+}
+
+int dequeue2() {
+    return queue2[front2++];
+}
+
+int isEmptyQueue1() {
+    return front1 > rear1;
+}
+
+int isEmptyQueue2() {
+    return front2 > rear2;
+}
+
+// Stack operations
+void push(int value) {
+    enqueue1(value);
+}
+
+int pop() {
+    if (isEmptyQueue1()) {
+        printf("Stack Underflow\n");
+        return -1;
+    }
+    while (front1 < rear1) {
+        enqueue2(dequeue1());
+    }
+    int poppedValue = dequeue1();
+    while (!isEmptyQueue2()) {
+        enqueue1(dequeue2());
+    }
+    return poppedValue;
+}
+
+int main() {
+    push(10);
+    push(20);
+    push(30);
+    printf("Popped element: %d\n", pop());
+    printf("Popped element: %d\n", pop());
+    return 0;
+}
+
+
+Implement a queue using two stacks********************************
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 100
+
+int stack1[SIZE], stack2[SIZE];
+int top1 = -1, top2 = -1;
+
+// Stack operations
+void push1(int value) {
+    stack1[++top1] = value;
+}
+
+int pop1() {
+    return stack1[top1--];
+}
+
+void push2(int value) {
+    stack2[++top2] = value;
+}
+
+int pop2() {
+    return stack2[top2--];
+}
+
+// Queue operations
+void enqueue(int value) {
+    push1(value);
+}
+
+int dequeue() {
+    if (top2 == -1) {
+        while (top1 != -1) {
+            push2(pop1());
+        }
+    }
+    if (top2 == -1) {
+        printf("Queue Underflow\n");
+        return -1;
+    }
+    return pop2();
+}
+
+int main() {
+    enqueue(10);
+    enqueue(20);
+    enqueue(30);
+    printf("Dequeued element: %d\n", dequeue());
+    printf("Dequeued element: %d\n", dequeue());
+    return 0;
+}
+
+
+
+Implement a single linked list with insertion, deletion, and search*************************************
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* head = NULL;
+
+void insert(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = head;
+    head = newNode;
+}
+
+void delete(int value) {
+    Node *temp = head, *prev = NULL;
+    if (temp != NULL && temp->data == value) {
+        head = temp->next;
+        free(temp);
+        return;
+    }
+    while (temp != NULL && temp->data != value) {
+        prev = temp;
+        temp = temp->next;
+    }
+    if (temp == NULL) {
+        printf("Value not found\n");
+        return;
+    }
+    prev->next = temp->next;
+    free(temp);
+}
+
+void search(int value) {
+    Node* temp = head;
+    while (temp != NULL) {
+        if (temp->data == value) {
+            printf("Value %d found\n", value);
+            return;
+        }
+        temp = temp->next;
+    }
+    printf("Value %d not found\n", value);
+}
+
+void display() {
+    Node* temp = head;
+    printf("List: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    insert(10);
+    insert(20);
+    insert(30);
+    display();
+    search(20);
+    delete(20);
+    display();
+    return 0;
+}
+
+
+
+Implement a stack using a linked list with O(1) push and pop************************************
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+Node* top = NULL;
+
+void push(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->next = top;
+    top = newNode;
+}
+
+int pop() {
+    if (top == NULL) {
+        printf("Stack Underflow\n");
+        return -1;
+    }
+    int value = top->data;
+    Node* temp = top;
+    top = top->next;
+    free(temp);
+    return value;
+}
+
+void display() {
+    Node* temp = top;
+    printf("Stack: ");
+    while (temp != NULL) {
+        printf("%d -> ", temp->data);
+        temp = temp->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    push(10);
+    push(20);
+    push(30);
+    display();
+    printf("Popped element: %d\n", pop());
+    display();
+    return 0;
+}
+
+
+
+Create a binary search tree (BST) and perform operations********************************
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+} Node;
+
+Node* createNode(int value) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = value;
+    newNode->left = newNode->right = NULL;
+    return newNode;
+}
+
+Node* insert(Node* root, int value) {
+    if (root == NULL) return createNode(value);
+    if (value < root->data)
+        root->left = insert(root->left, value);
+    else if (value > root->data)
+        root->right = insert(root->right, value);
+    return root;
+}
+
+Node* findMin(Node* root) {
+    while (root->left != NULL)
+        root = root->left;
+    return root;
+}
+
+Node* findMax(Node* root) {
+    while (root->right != NULL)
+        root = root->right;
+    return root;
+}
+
+Node* search(Node* root, int value) {
+    if (root == NULL || root->data == value)
+        return root;
+    if (value < root->data)
+        return search(root->left, value);
+    return search(root->right, value);
+}
+
+void inorder(Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        printf("%d ", root->data);
+        inorder(root->right);
+    }
+}
+
+int main() {
+    Node* root = NULL;
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 70);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 60);
+    insert(root, 80);
+
+    printf("Inorder traversal: ");
+    inorder(root);
+    printf("\n");
+
+    Node* minNode = findMin(root);
+    printf("Minimum key: %d\n", minNode->data);
+
+    Node* maxNode = findMax(root);
+    printf("Maximum key: %d\n", maxNode->data);
+
+    int key = 40;
+    Node* searchNode = search(root, key);
+    if (searchNode != NULL)
+        printf("Key %d found in the tree.\n", key);
+    else
+        printf("Key %d not found in the tree.\n", key);
+
+    return 0;
+}
+
+
+
+
+Implement hashing with linear probing*****************************
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define SIZE 10
+
+int hashTable[SIZE];
+
+void initializeTable() {
+    for (int i = 0; i < SIZE; i++) {
+        hashTable[i] = -1; // -1 indicates an empty slot
+    }
+}
+
+int hashFunction(int key) {
+    return key % SIZE;
+}
+
+void insert(int key) {
+    int index = hashFunction(key);
+    while (hashTable[index] != -1) {
+        index = (index + 1) % SIZE; // Linear probing
+    }
+    hashTable[index] = key;
+}
+
+int search(int key) {
+    int index = hashFunction(key);
+    int start = index;
+    while (hashTable[index] != -1) {
+        if (hashTable[index] == key)
+            return index;
+        index = (index + 1) % SIZE;
+        if (index == start) break; // Full circle
+    }
+    return -1; // Key not found
+}
+
+void display() {
+    printf("Hash Table: ");
+    for (int i = 0; i < SIZE; i++) {
+        printf("%d ", hashTable[i]);
+    }
+    printf("\n");
+}
+
+int main() {
+    initializeTable();
+    insert(10);
+    insert(22);
+    insert(31);
+    insert(4);
+    insert(15);
+
+    display();
+
+    int key = 31;
+    int index = search(key);
+    if (index != -1)
+        printf("Key %d found at index %d.\n", key, index);
+    else
+        printf("Key %d not found.\n", key);
+
+    return 0;
+}
+
+
+
+
+
+Implement sorting algorithms***************************
+(a) Insertion Sort++++++++++++++++++
+#include <stdio.h>
+
+void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+}
+
+void display(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {12, 11, 13, 5, 6};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    display(arr, n);
+
+    insertionSort(arr, n);
+
+    printf("Sorted array: ");
+    display(arr, n);
+
+    return 0;
+}
+
+
+
+(b) Merge Sort++++++++++++++++++++
+
+#include <stdio.h>
+
+void merge(int arr[], int l, int m, int r) {
+    int n1 = m - l + 1, n2 = r - m;
+    int L[n1], R[n2];
+    for (int i = 0; i < n1; i++) L[i] = arr[l + i];
+    for (int i = 0; i < n2; i++) R[i] = arr[m + 1 + i];
+
+    int i = 0, j = 0, k = l;
+    while (i < n1 && j < n2)
+        arr[k++] = (L[i] <= R[j]) ? L[i++] : R[j++];
+
+    while (i < n1) arr[k++] = L[i++];
+    while (j < n2) arr[k++] = R[j++];
+}
+
+void mergeSort(int arr[], int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+void display(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {12, 11, 13, 5, 6, 7};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    display(arr, n);
+
+    mergeSort(arr, 0, n - 1);
+
+    printf("Sorted array: ");
+    display(arr, n);
+
+    return 0;
+}
+
+
+c)Quick Sort+++++++++++++++++++
+
+#include <stdio.h>
+
+void swap(int* a, int* b) {
+    int t = *a;
+    *a = *b;
+    *b = t;
+}
+
+int partition(int arr[], int low, int high) {
+    int pivot = arr[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+    swap(&arr[i + 1], &arr[high]);
+    return i + 1;
+}
+
+void quickSort(int arr[], int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
+    }
+}
+
+void display(int arr[], int n) {
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int main() {
+    int arr[] = {10, 7, 8, 9, 1, 5};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    printf("Original array: ");
+    display(arr, n);
+
+    quickSort(arr, 0, n - 1);
+
+    printf("Sorted array: ");
+    display(arr, n);
+
+    return 0;
+}

@@ -1,0 +1,143 @@
+1. Evaluate a Postfix Expression Using Stacks
+Algorithm:
+
+Initialize an empty stack.
+Traverse the postfix expression from left to right:
+If the character is a number, push it onto the stack.
+If the character is an operator, pop the top two elements from the stack, perform the operation, and push the result back onto the stack.
+After traversing the expression, the top of the stack contains the result.
+
+
+2. Convert Infix Expression to Postfix Using Stacks
+Algorithm:
+
+Initialize an empty stack and an empty postfix string.
+Traverse the infix expression:
+If the character is an operand, append it to the postfix string.
+If the character is (, push it onto the stack.
+If the character is ), pop from the stack until ( is encountered, and append all popped operators to the postfix string.
+If the character is an operator, pop operators with higher or equal precedence from the stack and append them to the postfix string. Then, push the current operator.
+After traversal, pop all remaining operators from the stack and append them to the postfix string.
+
+
+3. Implement Double-Ended Queue (Deque) Using Arrays
+Algorithm:
+
+Use an array to implement a deque with two pointers: front and rear.
+Insert at Front:
+If the deque is full, return an overflow error.
+Decrement the front pointer and insert the element at the new front.
+Insert at Rear:
+If the deque is full, return an overflow error.
+Increment the rear pointer and insert the element at the new rear.
+Delete from Front:
+If the deque is empty, return an underflow error.
+Increment the front pointer to remove the front element.
+Delete from Rear:
+If the deque is empty, return an underflow error.
+Decrement the rear pointer to remove the rear element.
+
+
+
+4. Implement a Stack Using Two Queues
+Algorithm:
+
+Use two queues (queue1 and queue2).
+Push Operation:
+Enqueue the element into queue2.
+Transfer all elements from queue1 to queue2.
+Swap queue1 and queue2 to maintain the stack order.
+Pop Operation:
+Dequeue from queue1.
+
+
+
+5. Implement a Queue Using Two Stacks
+Algorithm:
+
+Use two stacks (stack1 and stack2).
+Enqueue Operation:
+Push the element onto stack1.
+Dequeue Operation:
+If stack2 is empty, transfer all elements from stack1 to stack2.
+Pop the top element from stack2.
+
+
+6. Implement Single Linked List Operations (Insertion/Deletion/Search)
+Algorithm for Insertion:
+
+Create a new node.
+If inserting at the beginning, set the new node's next pointer to the head and update the head.
+If inserting at the end, traverse to the last node and set its next pointer to the new node.
+Algorithm for Deletion:
+
+If deleting the head node, update the head pointer to the next node.
+If deleting a middle node, traverse to the previous node and update its next pointer to skip the target node.
+Algorithm for Search:
+
+Traverse the list node by node and compare the target value with each node's data.
+
+
+7. Implement a Stack Using a Linked List
+Algorithm:
+
+Push Operation:
+Create a new node.
+Set the new node’s next pointer to the head.
+Update the head pointer to the new node.
+Pop Operation:
+If the stack is empty, return an underflow error.
+Update the head pointer to the next node.
+Free the old head node.
+
+
+8. Binary Search Tree (BST) Operations
+Algorithm for BST Creation:
+
+Start with an empty root.
+For each key, insert it recursively:
+If the key is smaller than the current node, go to the left subtree.
+If the key is larger, go to the right subtree.
+Insert the key when an empty position is found.
+Algorithm for Minimum Key:
+
+Start from the root.
+Keep traversing the left subtree until the leftmost node is found.
+Algorithm for Maximum Key:
+
+Start from the root.
+Keep traversing the right subtree until the rightmost node is found.
+Algorithm for Search:
+
+Compare the target key with the current node.
+If equal, return the node.
+If smaller, search the left subtree; otherwise, search the right subtree.
+
+
+9. Implement Hashing with Linear Probing
+Algorithm:
+
+Use an array as a hash table.
+Insert:
+Compute the hash index using key % size.
+If the index is occupied, use linear probing (move to the next slot) until an empty slot is found.
+Search:
+Compute the hash index using key % size.
+Traverse the table using linear probing until the key is found or an empty slot is reached.
+Delete:
+Find the key and mark the slot as deleted (e.g., set it to -1).
+
+
+10. Sorting Algorithms
+(a) Insertion Sort
+Start from the second element.
+Compare it with the previous elements and insert it into the correct position in the sorted part of the array.
+Repeat for all elements.
+(b) Merge Sort
+Divide the array into two halves recursively.
+Sort each half.
+Merge the sorted halves by comparing elements from both halves.
+(c) Quick Sort
+Select a pivot element.
+Partition the array such that elements smaller than the pivot are on the left and larger ones are on the right.
+Recursively apply quick sort to the left and right partitions.
